@@ -13,7 +13,7 @@ export interface BaseClass {
 	/** Returns other classes allowed as children. */
 	mayContain(): BaseClass[];
 
-	name: string;
+	name?: string;
 	rule: Rule;
 }
 
@@ -67,6 +67,6 @@ export class Base {
 	bytePos: number;
 	name: string;
 
-	static name: string;
+	static sname: string;
 	static rule: Rule;
 }
