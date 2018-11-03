@@ -141,6 +141,8 @@ export class Parser {
 		var stream = cached.stream;
 
 		var pendingList = this.pendingList;
+		
+		var lastTag = '';
 
 		xml.on('startElement', (name: string, attrTbl: {[name: string]: string}) => {
 		// xml.on('opentag', (node: sax.Tag) => {
@@ -148,6 +150,7 @@ export class Parser {
 			// var attrTbl = node.attributes;
 
 			try {
+				lastTag = name;
 				state = this.startElement(state, name, attrTbl);
 			} catch(err) {
 				// Exceptions escaping from node-expat's event handlers cause weird effects.
@@ -179,7 +182,7 @@ export class Parser {
 
 		xml.on('text', function(text: string) {
 			if(stateStatic.textDepth) {
-				stateStatic.textHandlerList[stateStatic.textDepth - 1].addText(state, text);
+				stateStatic.textHandlerList[stateStatic.textDepth - 1].addText(state, text, lastTag);
 			}
 		});
 

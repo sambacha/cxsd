@@ -35,7 +35,7 @@ export class Base {
 	init(state: State) {}
 
 	/** Hook, runs for text content. */
-	addText(state: State, text: string) {}
+	addText(state: State, text: string, elementName?: string) {}
 
 	/** Hook, runs after closing tag. */
 	loaded(state: State) {}
