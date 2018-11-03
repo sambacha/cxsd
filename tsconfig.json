@@ -15,7 +15,7 @@
 			"es2015"
 		]
 	},
-	"files": [
-		"src/cli.ts"
+	"include": [
+		"src/**/*.ts"
 	]
 }
