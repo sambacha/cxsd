@@ -1,12 +1,12 @@
 node_modules/
 cache/
-<<<<<<< HEAD
+
 dist/
-=======
+
 .vscode/
 *.js
 *.d.ts
->>>>>>> 2d12e8956cde7c023ff8c66dc0f5bcbf99264cbf
+
 *.log.*
 *.log
 *.tgz

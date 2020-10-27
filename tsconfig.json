@@ -1,5 +1,5 @@
 {
-<<<<<<< HEAD
+
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
@@ -22,7 +22,7 @@
     "src/**/*.ts"
   ]
 }
-=======
+
 	"compilerOptions": {
 		"declaration": true,
 		"experimentalDecorators": true,
@@ -43,4 +43,4 @@
 		"src/**/*.ts"
 	]
 }
->>>>>>> 2d12e8956cde7c023ff8c66dc0f5bcbf99264cbf
+

@@ -10,7 +10,7 @@ import * as schema from "../../schema";
 export interface TypeBaseChild extends TypeBase {}
 
 export class TypeBase extends Base {
-<<<<<<< HEAD
+
   init(state: State) {
     if (!this.scope) this.scope = state.getScope();
 
@@ -98,7 +98,7 @@ export class TypeBase extends Base {
 
   // TODO: remove this and detect circular types (anonymous types inside elements referencing the same element) before exporting.
   exported: boolean;
-=======
+
 	init(state: State) {
 		if(!this.scope) this.scope = state.getScope();
 
@@ -183,5 +183,5 @@ export class TypeBase extends Base {
 
 	// TODO: remove this and detect circular types (anonymous types inside elements referencing the same element) before exporting.
 	exported: boolean;
->>>>>>> 2d12e8956cde7c023ff8c66dc0f5bcbf99264cbf
+
 }

@@ -12,11 +12,11 @@ export class Documentation extends types.Base {
     state.startText(this);
   }
 
-<<<<<<< HEAD
+
   addText(state: State, text: string) {
     this.commentList.push(text);
   }
-=======
+
 	addText(state: State, text: string, elementName: string) {
 		var isEmpty = text.trim().length === 0;
 		var header = '';
@@ -28,7 +28,7 @@ export class Documentation extends types.Base {
 		}
 		this.commentList.push(header + text);
 	}
->>>>>>> 2d12e8956cde7c023ff8c66dc0f5bcbf99264cbf
+
 
   loaded(state: State) {
     state.endText();

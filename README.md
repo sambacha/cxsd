@@ -67,7 +67,7 @@ Related projects
 - [CodeSynthesis XSD](http://codesynthesis.com/projects/xsd/) generates `C++`-based parsers out of XSD schema definitions.
 
 License
-=======
+
 
 [The MIT License](https://raw.githubusercontent.com/charto/cxsd/master/LICENSE)
 

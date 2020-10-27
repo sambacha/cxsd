@@ -71,7 +71,7 @@ export class Parser {
 
     state = new State(state, rule);
 
-<<<<<<< HEAD
+
     if (!rule || !rule.proto) return state;
 
     var xsdElem = new (rule.proto as types.BaseClass)(state);
@@ -256,7 +256,7 @@ export class Parser {
 
   /** Defines valid contents for the XML file root element. */
   private rootRule: Rule;
-=======
+
 		state = new State(state, rule);
 
 		if(!rule || !rule.proto) return(state);
@@ -430,5 +430,5 @@ export class Parser {
 
 	/** Defines valid contents for the XML file root element. */
 	private rootRule: Rule;
->>>>>>> 2d12e8956cde7c023ff8c66dc0f5bcbf99264cbf
+
 }
