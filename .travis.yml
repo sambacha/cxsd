@@ -1,18 +1,18 @@
+
+# travis-ci
+os: linux
+dist: xenial
+sudo: true
+
 language: node_js
-
 node_js:
-  - "5.6"
-  - "4.3"
-  - "0.12"
-  - "0.10"
+- '10'
+- '12'
 
-env:
-  - CC=gcc-4.8 CXX=g++-4.8
+git:
+  quiet: true
+#cache: npm
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gcc-4.8
-      - g++-4.8
+install: npm install && npm install --package-lock-only
+
+scripts: npm run-script test
