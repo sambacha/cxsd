@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
@@ -21,3 +22,25 @@
     "src/**/*.ts"
   ]
 }
+=======
+	"compilerOptions": {
+		"declaration": true,
+		"experimentalDecorators": true,
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"noImplicitAny": true,
+		"outDir": "dist",
+		"target": "es5",
+		"typeRoots": [
+			"node_modules/types",
+			"types"
+		],
+		"lib": [
+			"es2015"
+		]
+	},
+	"include": [
+		"src/**/*.ts"
+	]
+}
+>>>>>>> 2d12e8956cde7c023ff8c66dc0f5bcbf99264cbf

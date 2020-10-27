@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 !dist/
 !dist/**/*
 !dist/**/**/*
+=======
+node_modules/
+cache/
+.vscode/
+>>>>>>> 2d12e8956cde7c023ff8c66dc0f5bcbf99264cbf
 src/
 .travis.yml
 *.png
