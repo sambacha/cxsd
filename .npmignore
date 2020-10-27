@@ -1,9 +1,6 @@
-node_modules/
-typings/
-cache/
+!dist/
+!dist/**/*
+!dist/**/**/*
 src/
 .travis.yml
 *.png
-*.log.*
-*.log
-*.tgz

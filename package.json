@@ -1,21 +1,61 @@
 {
-  "name": "cxsd",
-  "version": "0.1.1",
+  "name": "@wikipathways/cxsd",
+  "version": "0.2.10",
   "description": "Streaming XSD parser and XML parser generator with TypeScript output",
+  "main": "./dist/schema.js",
+  "typings": "./dist/schema.d.ts",
   "bin": {
-    "cxsd": "cxsd-cli.js"
+    "cxsd": "bin/cxsd"
   },
+  "files": [
+    "dist",
+    "bin",
+    "package.json",
+    "package-lock.json",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "tsc": "tsc",
-    "typings": "typings",
-    "prepublish": "typings install && tsc",
-    "test": "node cxsd-cli.js --help"
+    "build": "tsc -p tsconfig.json",
+    "prepare": "ALLE_DIR='../../../../'; if [ ! -d ./node_modules ] && [ -d \"$ALLE_DIR\"/node_modules ]; then echo 'Alle configuration detected. Testing from the top-level alle directory...' && (cd \"$ALLE_DIR\" && npm run '@wikipathways/cxsd:build'); else npm run build; fi",
+    "prepublishOnly": "npm i --package-lock-only && ALLE_DIR='../../../../'; if [ ! -d ./node_modules ] && [ -d \"$ALLE_DIR\"/node_modules ]; then echo 'Alle configuration detected. Testing from the top-level alle directory...' && (cd \"$ALLE_DIR\" && npm run '@wikipathways/cxsd:test'); else npm run test; fi",
+    "postpublish": "TAG=\"v$(jq -r .version package.json)\" && git commit -am \"Bumped to version $TAG\" && git tag -a $TAG -m \"Published version $TAG\" && git push origin $TAG",
+    "test": "npm-run-all --silent test:* # In case of error, remove --silent to debug.",
+    "test:build": "npm-run-all test:build:*",
+    "test:build:clean": "mkdir -p cache && rm -rf cache && cd test && mkdir -p cache && rm -rf cache && mkdir -p xmlns && rm -rf xmlns && cd ..",
+    "test:build:compile": "npm-run-all test:build:compile:*",
+    "test:build:compile:GPML2013a": "cd test && node ../bin/cxsd https://raw.githubusercontent.com/ariutta/GPML/master/GPML2013a.xsd && cd ..",
+    "test:build:compile:dir-example": "cd test && node ../bin/cxsd ./input/dir-example.xsd && cd ..",
+    "test:run": "jest"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "testEnvironment": "node",
+    "transform": {
+      "\\.(ts|tsx)$": "ts-jest"
+    },
+    "testPathIgnorePatterns": [
+      "<rootDir>/(node_modules)/"
+    ],
+    "transformIgnorePatterns": [
+      "<rootDir>/(node_modules)/"
+    ],
+    "haste": {
+      "providesModuleNodeModules": [
+        ".*"
+      ]
+    },
+    "testRegex": "(/src/.*\\.test\\.(ts|tsx|js))$"
   },
   "author": "Juha Järvi",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/charto/cxsd.git"
+    "url": "git+https://github.com/ariutta/cxsd.git"
   },
   "bugs": {
     "url": "https://github.com/charto/cxsd/issues"
@@ -30,14 +70,20 @@
     "typescript"
   ],
   "dependencies": {
-    "bluebird": "^3.4.1",
-    "cget": "~0.0.5",
-    "commander": "~2.9.0",
-    "cxml": "~0.1.0",
-    "node-expat": "~2.3.15"
+    "@types/bluebird": "^3.5.28",
+    "@types/node": "^10.17.0",
+    "@wikipathways/cget": "0.1.7",
+    "@wikipathways/cxml": "0.2.14",
+    "bluebird": "^3.7.1",
+    "commander": "^2.20.3",
+    "node-expat": "^2.3.18",
+    "source-map-support": "^0.5.16"
   },
   "devDependencies": {
-    "typescript": "^1.8.10",
-    "typings": "^1.3.2"
+    "@types/jest": "^24.0.21",
+    "jest": "^24.9.0",
+    "npm-run-all": "^4.1.5",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.4"
   }
 }

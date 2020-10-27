@@ -1,112 +1,121 @@
 // This file is part of cxsd, copyright (c) 2016 BusFaster Ltd.
 // Released under the MIT license, see LICENSE.
 
-import {Namespace, ImportContent} from '../Namespace';
-import {Type} from '../Type';
-import {Member} from '../Member';
-import {MemberRef} from '../MemberRef';
-import {Transform} from './Transform';
+import { MemberSpec as Member } from "@wikipathways/cxml";
+
+import { Namespace, ImportContent } from "../Namespace";
+import { Type } from "../Type";
+import { Transform } from "./Transform";
 
 export type Output = { [namespaceId: string]: ImportContent };
 
 export class AddImports extends Transform<AddImports, Output, void> {
-	prepare() {
-		this.visitType(this.doc);
+  prepare() {
+    this.visitType(this.doc);
 
-		for(var type of this.namespace.typeList) {
-			if(type) this.visitType(type);
-		}
+    for (var type of this.namespace.typeList) {
+      if (type) this.visitType(type);
+    }
 
-		this.namespace.importContentTbl = this.output;
+    for (var member of this.namespace.memberList) {
+      if (member) this.visitMember(member);
+    }
 
-		return(this.output);
-	}
+    this.namespace.importContentTbl = this.output;
 
-	/** Replace imported type and member IDs with sanitized names. */
-	finish(result: Output[]) {
-		for(var namespaceTbl of result) {
-			for(var namespaceId of Object.keys(namespaceTbl)) {
-				var output: ImportContent = {
-					typeTbl: {},
-					memberTbl: {}
-				};
+    return this.output;
+  }
 
-				var typeTbl = namespaceTbl[namespaceId].typeTbl;
+  /** Replace imported type and member IDs with sanitized names. */
+  finish(result: Output[]) {
+    for (var namespaceTbl of result) {
+      for (var namespaceId of Object.keys(namespaceTbl)) {
+        var output: ImportContent = {
+          typeTbl: {},
+          memberTbl: {}
+        };
 
-				for(var key of Object.keys(typeTbl)) {
-					var type = typeTbl[key];
-					output.typeTbl[type.safeName] = type;
-				}
+        var typeTbl = namespaceTbl[namespaceId].typeTbl;
 
-				var memberTbl = namespaceTbl[namespaceId].memberTbl;
+        for (var key of Object.keys(typeTbl)) {
+          var type = typeTbl[key];
+          output.typeTbl[type.safeName] = type;
+        }
 
-				for(var key of Object.keys(memberTbl)) {
-					var member = memberTbl[key];
-					// Use name instead of safeName, because the latter may
-					// randomly differ between different containing types due to
-					// naming collisions (for example between attribute and element).
-					output.memberTbl[member.name] = member;
-				}
+        var memberTbl = namespaceTbl[namespaceId].memberTbl;
 
-				namespaceTbl[namespaceId] = output;
-			}
-		}
-	}
+        for (var key of Object.keys(memberTbl)) {
+          var member = memberTbl[key];
+          // Use name instead of safeName, because the latter may
+          // randomly differ between different containing types due to
+          // naming collisions (for example between attribute and element).
+          output.memberTbl[member.name] = member;
+        }
 
-	addRef(namespace: Namespace, member?: Member, type?: Type) {
-		if(namespace && namespace != this.namespace) {
-			// Type and/or member from another, imported namespace.
+        namespaceTbl[namespaceId] = output;
+      }
+    }
+  }
 
-			// Make sure it gets exported.
-			if(type) type.isExported = true;
-			if(member) member.isExported = true;
+  addRef(namespace: Namespace, member?: Member, type?: Type) {
+    if (namespace && namespace != this.namespace) {
+      // Type and/or member from another, imported namespace.
 
-			var id = namespace.id;
-			var short = this.namespace.getShortRef(id);
+      // Make sure it gets exported.
+      if (type) type.isExported = true;
+      if (member) member.isExported = true;
 
-			if(!short) {
-				short = (member && member.namespace.getShortRef(id)) || namespace.short;
+      var id = namespace.id;
+      var short = this.namespace.getShortRef(id);
 
-				if(short) this.namespace.addRef(short, namespace);
-			}
+      if (!short) {
+        short =
+          (member && (member.namespace as any).getShortRef(id)) ||
+          namespace.short;
 
-			if(short) {
-				if(!this.output[id]) {
-					this.output[id] = {
-						typeTbl: {},
-						memberTbl: {}
-					};
-				}
+        if (short) this.namespace.addRef(short, namespace);
+      }
 
-				if(type && type.namespace == namespace) {
-					this.output[id].typeTbl[type.surrogateKey] = type;
-				}
+      if (short) {
+        if (!this.output[id]) {
+          this.output[id] = {
+            typeTbl: {},
+            memberTbl: {}
+          };
+        }
 
-				if(member && member.namespace == namespace) {
-					this.output[id].memberTbl[member.surrogateKey] = member;
-				}
-			}
-		}
-	}
+        if (type && type.namespace == namespace) {
+          this.output[id].typeTbl[type.surrogateKey] = type;
+        }
 
-	visitMember(member: Member) {
-		this.addRef(member.namespace, member);
+        if (member && member.namespace == namespace) {
+          this.output[id].memberTbl[member.surrogateKey] = member;
+        }
+      }
+    }
+  }
 
-		if(member.substitutes) this.addRef(member.substitutes.namespace, member.substitutes);
+  visitMember(member: Member) {
+    this.addRef(member.namespace as any, member);
 
-		for(var type of member.typeList) this.addRef(type.namespace, member, type);
-	}
+    if (member.substitutes)
+      this.addRef(member.substitutes.namespace as any, member.substitutes);
 
-	visitType(type: Type) {
-		// Types holding primitives should inherit from them.
-		// NOTE: This makes base primitive types inherit themselves.
-		if(type.primitiveType && !type.parent) type.parent = type.primitiveType;
+    for (var type of member.typeSpecList)
+      this.addRef(type.namespace as any, member, type as any);
+  }
 
-		if(type.parent) this.addRef(type.parent.namespace, null, type.parent);
+  visitType(type: Type) {
+    // Types holding primitives should inherit from them.
+    // NOTE: This makes base primitive types inherit themselves.
+    if (type.primitiveType && !type.parent) type.parent = type.primitiveType;
 
-		for(var member of this.getTypeMembers(type)) this.visitMember(member.member);
-	}
+    if (type.parent) this.addRef(type.parent.namespace, null, type.parent);
 
-	construct = AddImports;
-	output: Output = {};
+    for (var member of this.getTypeMembers(type))
+      this.visitMember(member.member);
+  }
+
+  construct = AddImports;
+  output: Output = {};
 }
